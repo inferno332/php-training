@@ -43,6 +43,8 @@ docker-compose exec app php artisan migrate
 
 7. Access the application at http://localhost:3000/login
 
+8. Example login : "admin@example.com" / "password123"
+
 ### Useful commands
 
 -   Stop containers:
