@@ -28,4 +28,37 @@ class Authentication
     {
         session()->forget('logged_in');
     }
+
+    public function handleLoginRedirect()
+    {
+        if ($this->check()) {
+            return redirect('/dashboard');
+        }
+        return view('auth.login');
+    }
+
+    public function handleLoginAttempt(array $credentials)
+    {
+        if ($this->attempt($credentials)) {
+            return redirect('/dashboard');
+        }
+
+        return back()
+            ->withInput(['email' => $credentials['email']])
+            ->with('error', 'Invalid credentials');
+    }
+
+    public function handleDashboardAccess()
+    {
+        if (!$this->check()) {
+            return redirect('/login');
+        }
+        return view('auth.dashboard');
+    }
+
+    public function handleLogout()
+    {
+        $this->logout();
+        return redirect('/login');
+    }
 }

@@ -16,10 +16,7 @@ class AuthController extends Controller
 
     public function showLogin()
     {
-        if ($this->auth->check()) {
-            return redirect('/dashboard');
-        }
-        return view('auth.login');
+        return $this->auth->handleLoginRedirect();
     }
 
     public function login(Request $request)
@@ -29,28 +26,16 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $credentials = $request->only(['email', 'password']);
-
-        if ($this->auth->attempt($credentials)) {
-            return redirect('/dashboard');
-        }
-
-        return back()
-            ->withInput($request->only('email'))
-            ->with('error', 'Invalid credentials');
+        return $this->auth->handleLoginAttempt($request->only(['email', 'password']));
     }
 
     public function dashboard()
     {
-        if (!$this->auth->check()) {
-            return redirect('/login');
-        }
-        return view('auth.dashboard');
+        return $this->auth->handleDashboardAccess();
     }
 
     public function logout()
     {
-        $this->auth->logout();
-        return redirect('/login');
+        return $this->auth->handleLogout();
     }
 }
