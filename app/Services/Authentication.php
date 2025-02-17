@@ -2,17 +2,21 @@
 
 namespace App\Services;
 
-class Authentication
+use App\Services\Interfaces\AuthenticationInterface;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+
+class Authentication implements AuthenticationInterface
 {
-    private $validCredentials = [
+    private const VALID_CREDENTIALS = [
         'email' => 'admin@example.com',
         'password' => 'password123'
     ];
 
-    public function attempt(array $credentials): bool
+    protected function attempt(array $credentials): bool
     {
-        if ($credentials['email'] === $this->validCredentials['email'] &&
-            $credentials['password'] === $this->validCredentials['password']) {
+        if ($credentials['email'] === self::VALID_CREDENTIALS['email'] &&
+            $credentials['password'] === self::VALID_CREDENTIALS['password']) {
             session(['logged_in' => true]);
             return true;
         }
@@ -24,12 +28,7 @@ class Authentication
         return session('logged_in', false);
     }
 
-    public function logout(): void
-    {
-        session()->forget('logged_in');
-    }
-
-    public function handleLoginRedirect()
+    public function handleLoginRedirect(): View|RedirectResponse
     {
         if ($this->check()) {
             return redirect('/dashboard');
@@ -37,7 +36,7 @@ class Authentication
         return view('auth.login');
     }
 
-    public function handleLoginAttempt(array $credentials)
+    public function handleLoginAttempt(array $credentials): RedirectResponse
     {
         if ($this->attempt($credentials)) {
             return redirect('/dashboard');
@@ -48,7 +47,7 @@ class Authentication
             ->with('error', 'Invalid credentials');
     }
 
-    public function handleDashboardAccess()
+    public function handleDashboardAccess(): View|RedirectResponse
     {
         if (!$this->check()) {
             return redirect('/login');
@@ -56,9 +55,9 @@ class Authentication
         return view('auth.dashboard');
     }
 
-    public function handleLogout()
+    public function handleLogout(): RedirectResponse
     {
-        $this->logout();
+        session()->forget('logged_in');
         return redirect('/login');
     }
 }

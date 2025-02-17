@@ -9,9 +9,10 @@ class AuthController extends Controller
 {
     private $auth;
 
-    public function __construct(Authentication $auth)
+    public function __construct(Authentication $authService) // <-- Inject the Authentication service
     {
-        $this->auth = $auth;
+        // Assign the injected service to the $auth property
+        $this->auth = $authService;
     }
 
     public function showLogin()
