@@ -20,41 +20,45 @@ cp .env.example .env
 4. Start Docker containers:
 
 ```bash
-docker-compose up -d
+docker compose up --build -d
 ```
 
 4. Install dependencies:
 
 ```bash
-docker-compose exec app composer install
+docker compose exec app composer install
 ```
 
 5. Generate application key:
 
 ```bash
-docker-compose exec app php artisan key:generate
+docker compose exec app php artisan key:generate
 ```
 
-6. Run database migrations:
+6. Run database migrations and seeder:
 
 ```bash
-docker-compose exec app php artisan migrate
+docker compose exec app php artisan migrate
+```
+
+```bash
+docker compose exec app php artisan migrate:fresh --seed
 ```
 
 7. Access the application at http://localhost:3000/login
 
-8. Example login : "admin@example.com" / "password123"
+    > #### Example login : "admin@d-soft.com" / "password123"
 
 ### Useful commands
 
 -   Stop containers:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 -   View logs:
 
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```

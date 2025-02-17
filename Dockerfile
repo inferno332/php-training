@@ -51,11 +51,15 @@ WORKDIR /var/www
 # Copy application files
 COPY . .
 
+# Make entrypoint script executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Install application dependencies and build assets
 RUN composer install --no-dev --no-interaction --optimize-autoloader
 RUN npm install && npm run build
 
-# Ensure correct permissions for Laravel directories
+# Update permissions for Laravel directories
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
@@ -68,5 +72,6 @@ RUN php artisan config:cache \
 # Expose PHP-FPM port
 EXPOSE 9000
 
-# Start PHP-FPM
+# Use the entrypoint script
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
