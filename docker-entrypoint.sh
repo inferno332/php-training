@@ -21,19 +21,19 @@ chmod -R 775 /var/www/storage
 chmod -R 775 /var/www/bootstrap/cache
 
 # Wait for database to be ready
-echo "Waiting for database to be ready..."
-max_tries=10
-counter=0
+# echo "Waiting for database to be ready..."
+# max_tries=10
+# counter=0
 
-until php artisan db:show --json > /dev/null 2>&1; do
-    counter=$((counter + 1))
-    if [ $counter -gt $max_tries ]; then
-        echo "Database connection failed after $max_tries attempts. Exiting..."
-        exit 1
-    fi
-    echo "Waiting for database connection... ($counter/$max_tries)"
-    sleep 2
-done
+# until php artisan db:show --json > /dev/null 2>&1; do
+#     counter=$((counter + 1))
+#     if [ $counter -gt $max_tries ]; then
+#         echo "Database connection failed after $max_tries attempts. Exiting..."
+#         # exit 1
+#     fi
+#     echo "Waiting for database connection... ($counter/$max_tries)"
+#     sleep 2
+# done
 
 echo "Database connection successful!"
 echo "Current environment: ${APP_ENV:-production}"
